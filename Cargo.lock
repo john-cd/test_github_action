@@ -3,5 +3,5 @@
 version = 3
 
 [[package]]
-name = "test_github_action"
+name = "test_app"
 version = "0.1.0"
