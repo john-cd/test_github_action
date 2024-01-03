@@ -16,7 +16,7 @@ jobs:
       - name: Checkout the code
         uses: actions/checkout@v4
       - name: Create a Docker image from the code
-        uses: john-cd/rust_github_action@v1
+        uses: john-cd/rust_github_action@master # @v1 to specify a specific version
         #with:
       - name: List Directories
         run: ls -la
