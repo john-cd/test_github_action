@@ -9,14 +9,17 @@ concurrency:
   group: "test_workflow"
   cancel-in-progress: false
 jobs:
-  hello_world_job:
+  test_job:
     runs-on: ubuntu-latest
     name: A test job
     steps:
       - name: Checkout the code
         uses: actions/checkout@v4
       - name: Create a Docker image from the code
+        id: create_docker_image
         uses: john-cd/rust_github_action@master # @v1 to specify a specific version
         #with:
+      - name: Output file path
+        run: echo "${{ steps.create_docker_image.outputs.output_file_path }}"
       - name: List Directories
         run: ls -la
