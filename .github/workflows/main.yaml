@@ -1,25 +1,54 @@
-name: 'Rust GitHub Action test workflow'
+name: Rust GitHub Action test workflow
+
 on:
   push:
-  ## Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
-## Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
-## However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
-concurrency:
-  group: "test_workflow"
-  cancel-in-progress: false
+
+permissions:
+  contents: read
+
 jobs:
   test_job:
+    name: Build, load, and run the action image
     runs-on: ubuntu-latest
-    name: A test job
+    timeout-minutes: 30
     steps:
-      - name: Checkout the code
-        uses: actions/checkout@v4
-      - name: Create a Docker image from the code
-        id: create_docker_image
-        uses: john-cd/rust_github_action@master # @v1 to specify a specific version
-        #with:
-      - name: Output file path
-        run: echo "${{ steps.create_docker_image.outputs.output_file_path }}"
-      - name: List Directories
-        run: ls -la
+      - name: Check out the test application
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Build the application image archive
+        id: build_image
+        uses: john-cd/rust_github_action@90676192279197c6d8d5802d2531af644e117a25
+        with:
+          app-name: test_app
+          output-file-name: test-app
+
+      - name: Validate and run the exported image
+        env:
+          ACTION_OUTPUT_FILE_PATH: ${{ steps.build_image.outputs.output_file_path }}
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          archive_path="${ACTION_OUTPUT_FILE_PATH:?The action did not set output_file_path}"
+          if [[ ! -f "$archive_path" ]]; then
+            printf 'Action output is not a file: %s\n' "$archive_path" >&2
+            exit 1
+          fi
+
+          unzip -t "$archive_path"
+          image_tar="$RUNNER_TEMP/test-app.tar"
+          unzip -p "$archive_path" > "$image_tar"
+          test -s "$image_tar"
+          if ! tar -tf "$image_tar" | grep -Fx 'manifest.json' >/dev/null; then
+            echo 'The exported archive does not contain a Docker image manifest.' >&2
+            exit 1
+          fi
+
+          docker load --input "$image_tar"
+          docker image inspect final-app:latest >/dev/null
+          output="$(docker run --rm final-app:latest)"
+          if [[ "$output" != 'Hello, world!' ]]; then
+            printf 'Unexpected container output: <%s>\n' "$output" >&2
+            exit 1
+          fi
