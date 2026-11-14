@@ -1,7 +1,5 @@
 <!-- TODO Reviewed ??-??-2026. -->
 
-<!-- TODO Reviewed ??-??-2026. -->
-
 # test_github_action
 
 This repository exercises the Rust container action on a GitHub-hosted Linux runner. The workflow pins both the checkout action and the upstream container action to reviewed commit SHAs, then validates the returned ZIP, loads its Docker image, and runs the test binary.
