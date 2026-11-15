@@ -81,3 +81,21 @@ build-env:
 [windows]
 build-setup:
     pwsh.exe -NoLogo -NoProfile -File "{{root}}/scripts/setup-build.ps1"
+
+# Standard Cargo checks for the example package in this repository.
+check:
+    cargo check --all-targets --all-features --locked
+
+lint:
+    cargo clippy --all-targets --all-features --locked -- -D warnings
+
+build:
+    cargo build --all-targets --all-features --locked
+
+test:
+    cargo test --all-targets --all-features --locked
+
+alias c := check
+alias l := lint
+alias b := build
+alias t := test
