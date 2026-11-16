@@ -1,0 +1,20 @@
+# TODO Reviewed ??-??-2026.
+
+minimum_prek_version = "0.5.6"
+
+[[repos]]
+repo = "builtin"
+hooks = [
+  { id = "check-case-conflict" },
+  { id = "check-merge-conflict" },
+  { id = "check-yaml" },
+  { id = "detect-private-key" },
+  { id = "end-of-file-fixer" },
+  { id = "trailing-whitespace", args = ["--markdown-linebreak-ext=md"] },
+]
+
+[[repos]]
+repo = "local"
+hooks = [
+  { id = "rust-format", name = "Format Rust", entry = "cargo +nightly-2026-11-11 fmt --all", language = "system", types = ["rust"], pass_filenames = false },
+]
