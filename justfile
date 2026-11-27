@@ -6,7 +6,8 @@ set windows-shell := ["C:/Program Files/Git/bin/bash.exe", "-uc"]
 set quiet
 
 export CARGO_TERM_QUIET := env("CARGO_TERM_QUIET", "true")
-rustfmt_toolchain := env("RUSTFMT_TOOLCHAIN", "nightly-2026-11-11")
+# Pin the Rustfmt snapshot so formatting checks agree across machines and CI.
+rustfmt_toolchain := env("RUSTFMT_TOOLCHAIN", "nightly-2026-11-16")
 export RUSTFMT_TOOLCHAIN := rustfmt_toolchain
 
 root := replace(source_directory(), "\\", "/")
