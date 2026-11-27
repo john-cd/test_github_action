@@ -16,5 +16,5 @@ hooks = [
 [[repos]]
 repo = "local"
 hooks = [
-  { id = "rust-format", name = "Format Rust", entry = "cargo +nightly-2026-11-11 fmt --all", language = "system", types = ["rust"], pass_filenames = false },
+  { id = "rust-format", name = "Format Rust", entry = "cargo +nightly-2026-11-16 fmt --all", language = "system", types = ["rust"], pass_filenames = false },
 ]
